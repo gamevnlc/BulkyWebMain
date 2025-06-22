@@ -26,7 +26,7 @@ public class Repository<T> : IRepository<T> where T : class
     public T Get(Expression<Func<T, bool>> filter)
     {
         IQueryable<T> query = dbSet;
-        query.Where(filter);
+        query = query.Where(filter);
         return query.FirstOrDefault();
     }
 
