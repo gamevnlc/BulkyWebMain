@@ -33,7 +33,7 @@ public class Edit : PageModel
         {
             _db.Categories.Update(Category);
             _db.SaveChanges();
-            // TempData["success"] = "The category has been edited successfully";
+            TempData["success"] = "The category has been edited successfully";
             return RedirectToPage("Index");
         }
         return Page();

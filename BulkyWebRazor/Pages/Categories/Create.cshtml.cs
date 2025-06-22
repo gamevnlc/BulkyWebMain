@@ -27,6 +27,7 @@ public class Create : PageModel
     {
         _db.Categories.Add(Category);
         _db.SaveChanges();
+        TempData["success"] = "Category created";
         return RedirectToPage("Index");
     }
 }
