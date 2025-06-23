@@ -1,5 +1,6 @@
 ﻿using Bulky.DataAccess.Repository.IRepository;
 using Bulky.Models;
+using Bulky.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -32,25 +33,47 @@ public class ProductController : Controller
         });
         
         // ViewBag.CategoryList = CategoryList;
-        ViewData["CategoryList"] = CategoryList;
-        return View();
+        // ViewData["CategoryList"] = CategoryList;
+        ProductVM productVm = new()
+        {
+            CategoryList = CategoryList,
+            Product = new Product()
+        };
+        return View(productVm);
     }
     
     [HttpPost]
-    public IActionResult Create(Product product)
+    // public IActionResult Create(Product product)
+    // {
+    //     if (ModelState.IsValid)
+    //     {
+    //         _unitOfWork.ProductRepository.Add(product);
+    //         _unitOfWork.Save();
+    //         TempData["success"] = "The Product has been added successfully";
+    //         return RedirectToAction("Index", "Product");
+    //     }
+    //     return View();
+    // }
+    //
+    public IActionResult Create(ProductVM productVm)
     {
-        // if (Product.Name != null && Product.Name == "test")
-        // {
-        //     ModelState.AddModelError("", "Test is an invalid Product name");
-        // }
         if (ModelState.IsValid)
         {
-            _unitOfWork.ProductRepository.Add(product);
+            _unitOfWork.ProductRepository.Add(productVm.Product);
             _unitOfWork.Save();
             TempData["success"] = "The Product has been added successfully";
             return RedirectToAction("Index", "Product");
         }
-        return View();
+        else
+        {
+            productVm.CategoryList = _unitOfWork.CategoryRepository.GetAll().Select(u => new SelectListItem
+            {
+                Text = u.Name,
+                Value = u.Id.ToString()
+            });
+            
+            return View(productVm);
+        }
     }
 
     public IActionResult Edit(int? id)
