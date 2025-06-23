@@ -1,4 +1,5 @@
-﻿@model Product
+﻿@using Microsoft.EntityFrameworkCore.Metadata.Internal
+@model Product
 
 <div class="card shadow border-0 mt-4">
     <div class="card-header bg-secondary bg-gradient ml-0 py-3"></div>
@@ -10,13 +11,6 @@
     <div class="card-body p-4">
         <form method="post" class="row">
             <div class="border p-3 mt-4">
-                @* <div class="row pb-2"> *@
-                @*     <h2 class="text-primary"> *@
-                @*         Create Product *@
-                @*     </h2> *@
-                @* </div> *@
-                @* <div asp-validation-summary="AllKOnly"></div>
-                @* <div asp-validation-summary="None"></div> *@
                 <div class="form-floating py-2 col-12">
                     <input asp-for="Title" class="form-control border-0 shadow">
                     <label asp-for="Title" class="ms-2"></label>
@@ -56,6 +50,13 @@
                     <input asp-for="Price100" class="form-control border-0 shadow">
                     <label asp-for="Price100" class="ms-2"></label>
                     <span asp-validation-for="Price100" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-2 col-12">
+                    <select asp-for="CategoryId" asp-items="ViewBag.CategoryList" class="form-select border-0 shadow">
+                        <option disabled selected>Select Category</option>
+                    </select>
+                    <label asp-for="CategoryId" class="ms-2"></label>
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
                 </div>
                 <div class="row pt-2">
                     <div class="col-6">
