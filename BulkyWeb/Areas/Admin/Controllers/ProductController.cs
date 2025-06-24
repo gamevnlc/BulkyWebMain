@@ -23,7 +23,7 @@ public class ProductController : Controller
     // GET
     public IActionResult Index()
     {
-        List<Product> products = _unitOfWork.ProductRepository.GetAll().ToList();
+        List<Product> products = _unitOfWork.ProductRepository.GetAll(includeProperties: "Category").ToList();
         return View(products);
     }
 
