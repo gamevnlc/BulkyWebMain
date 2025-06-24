@@ -11,10 +11,13 @@ public class ProductController : Controller
 {
     // private readonly IProductRepository _ProductRepository;
     private readonly IUnitOfWork _unitOfWork;
-    public ProductController(IUnitOfWork unitOfWork)
+    
+    private readonly IWebHostEnvironment _webHostEnvironment;
+    public ProductController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
     {
         // _ProductRepository = db;
         _unitOfWork = unitOfWork;
+        _webHostEnvironment = webHostEnvironment;
     }
 
     // GET
@@ -109,6 +112,20 @@ public class ProductController : Controller
     {
         if (ModelState.IsValid)
         {
+            string wwwRootPath = _webHostEnvironment.WebRootPath;
+            if (file != null)
+            {
+                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                string productPath = Path.Combine(wwwRootPath, @"images\product\");
+
+                using (var filestream = new FileStream(Path.Combine(productPath, fileName), FileMode.Create))
+                {
+                    file.CopyTo(filestream);   
+                }
+
+                productVm.Product.ImageUrl = @"\images\product\" + fileName;
+
+            }
             _unitOfWork.ProductRepository.Add(productVm.Product);
             _unitOfWork.Save();
             TempData["success"] = "The Product has been added successfully";
