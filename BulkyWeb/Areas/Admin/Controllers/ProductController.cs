@@ -118,15 +118,33 @@ public class ProductController : Controller
                 string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
                 string productPath = Path.Combine(wwwRootPath, @"images\product\");
 
+                if (!string.IsNullOrEmpty(productVm.Product.ImageUrl))
+                {
+                    //delete the old image
+                    var oldImagePath = Path.Combine(wwwRootPath, productVm.Product.ImageUrl.TrimStart('\\'));
+                    if (System.IO.File.Exists(oldImagePath))
+                    {
+                        System.IO.File.Delete(oldImagePath);
+                    }
+                }
+
                 using (var filestream = new FileStream(Path.Combine(productPath, fileName), FileMode.Create))
                 {
                     file.CopyTo(filestream);   
                 }
 
                 productVm.Product.ImageUrl = @"\images\product\" + fileName;
-
             }
-            _unitOfWork.ProductRepository.Add(productVm.Product);
+
+            if (productVm.Product.Id == 0)
+            {
+                _unitOfWork.ProductRepository.Add(productVm.Product);
+            }
+            else
+            {
+                _unitOfWork.ProductRepository.Update(productVm.Product);   
+            }
+            
             _unitOfWork.Save();
             TempData["success"] = "The Product has been added successfully";
             return RedirectToAction("Index", "Product");
